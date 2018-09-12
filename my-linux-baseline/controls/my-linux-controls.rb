@@ -3,6 +3,8 @@
 
 include_controls 'linux-baseline' do
   skip_control 'os-05'
+  skip_control 'os-05b'
+  skip_control 'os-06'
   skip_control 'os-08'
   skip_control 'os-10'
   skip_control 'package-08'
