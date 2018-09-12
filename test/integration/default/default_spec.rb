@@ -1,6 +1,6 @@
 # # encoding: utf-8
 
-describe service('apache2') do
+describe service('httpd') do
   it {should be_running }
 end
 
