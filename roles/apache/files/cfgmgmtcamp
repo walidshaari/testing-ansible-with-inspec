@@ -27,6 +27,6 @@
 
   Options -Indexes
 
-  ErrorLog /var/log/apache2/error.log
-  TransferLog /var/log/apache2/access.log
+  ErrorLog /var/log/httpd/error.log
+  TransferLog /var/log/httpd/access.log
 </VirtualHost>

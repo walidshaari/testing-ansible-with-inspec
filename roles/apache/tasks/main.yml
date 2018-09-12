@@ -21,47 +21,31 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-- name: Updates apt cache
-  apt: update_cache=true
-
 - name: Installs necessary packages
-  apt: pkg={{ item }} state=latest
+  package: pkg={{ item }} state=latest
   with_items:
-    - apache2
+    - httpd
     - git
     - curl
 
 - name: Push future default virtual host configuration
-  copy: src=cfgmgmtcamp dest=/etc/apache2/sites-available/cfgmgmtcamp.conf mode=0640
+  copy: src=cfgmgmtcamp dest=/etc/httpd/conf.d/cfgmgmtcamp.conf mode=0640
 
 - name: Deploy the configuration management camp website
   git: repo=https://github.com/cfgmgmtcamp/cfgmgmtcamp.github.io.git dest=/var/www/cfgmgmtcamp depth=1
   tags: deploy
-
-- name: Activates the virtualhost
-  command: a2ensite cfgmgmtcamp
+  notify:
+    - restart apache
+#- name: Activates the virtualhost
+#  command: a2ensite cfgmgmtcamp
 
 - name: Check that the config is valid
-  command: apache2ctl configtest
+  command: apachectl configtest
   register: result
   ignore_errors: True
 
-- name: Rolling back - Restoring old default virtualhost
-  command: a2ensite 000-default
-  when: result|failed
-
-- name: Rolling back - Removing our virtualhost
-  command: a2dissite cfgmgmtcamp
-  when: result|failed
-
-- name: Rolling back - Ending playbook
-  fail: msg="Configuration file is not valid. Please check that before re-running the playbook."
-  when: result|failed
-
-- name: Deactivates the default virtualhost
-  command: a2dissite 000-default
-
-- name: Deactivates the default ssl virtualhost
-  command: a2dissite default-ssl
-  notify:
-    - restart apache
+- name: ensure httpd is enabled and runing
+  service: 
+    name: httpd 
+    state: running 
+    enabled: yes
