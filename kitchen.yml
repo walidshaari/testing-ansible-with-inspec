@@ -8,7 +8,7 @@ provisioner:
   roles_path: roles
   require_ansible_repo: true
   ansible_verbose: true
-  ansible_version: latest
+  #ansible_version: latest
   require_chef_for_busser: false
   playbook:  site.yml
 
@@ -17,7 +17,7 @@ verifier:
   sudo: true
 
 platforms:
-  - name: centos-7
+  - name: centos-7a
     driver_config:
       network:
       - ['forwarded_port', {guest: 80, host: 8888}]
